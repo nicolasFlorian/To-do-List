@@ -1,34 +1,44 @@
 var now = new Date()
 let activityValue = []
+const submitButton = $('button[type="submit"]')
+const resetButton = $('button[type="reset"]')
+const inputValue = $('form input[type="text"]')
 
-$('main header button').click(() => {
-    const checker = $('#formContainer').is(':visible')
-    if (checker) {
-        $('#formContainer').slideUp()
+function toggleFormVisibility() {
+    const formIsVisible = $("#formContainer").is(":visible");
+    if (formIsVisible) {
+        $("#formContainer").slideUp();
     } else {
-        $('#formContainer').slideDown()
+        $("#formContainer").slideDown();
     }
-})
+}
 
-$('header div').click(() => {
-    let promptValue = prompt('Digite o novo nome da lista. (Max 20 caracteres)')
-    if (promptValue.length > 20) {
-        alert('O nome da lista não pode ter mais de 20 caracteres.')
-    }else if (promptValue.length === 0 || promptValue == " ") {
-        alert('O nome da lista não pode ser vazio.')
-    }else {
-        $('header div h1').text(promptValue)
+function updateListName() {
+    let newName = prompt("Digite o novo nome da lista. (Max 20 caracteres)");
+
+    if (newName.length > 20) {
+        alert("O nome da lista não pode ter mais de 20 caracteres.");
+    } else if (newName.trim() === "") {
+        alert("O nome da lista não pode ser vazio.");
+    } else {
+        $("header div h1").text(newName);
     }
-})
+}
 
-function checkerInputValue(){
-    if ($('form input[type="text"]').val().length > 30) {
-        alert('O nome da atividade não pode ter mais de 30 caracteres.')
-    }else if (activityValue.includes($('form input[type="text"]').val())){
-        alert('O nome da atividade já existe.')       
-    }else{
-        activityValue.push($('form input[type="text"]').val())
-        createActivity()
+function checkInputValue() {
+    const inputValue = $('form input[type="text"]').val();
+    const input = $('form input[type="text"]');
+
+    if (inputValue.length > 90) {
+        alert("O nome da atividade não pode ter mais de 90 caracteres.");
+    } else if (activityValue.includes(inputValue)) {
+        alert("O nome da atividade já existe.");
+    } else if (inputValue.trim() === "") {
+        input.val("");
+        alert("O nome da atividade não pode ser vazio.");
+    } else {
+        activityValue.push(inputValue);
+        createActivity();
     }
 }
 
@@ -73,8 +83,15 @@ function createActivity(){
     }
 }
 
+function addActivity(e){
+    if ($(inputValue).val() == '') {
+    }else{
+        e.preventDefault();
+        checkInputValue();
+    }
+}
 
-$(document).on('click', '#trash', (e) =>{
+function removeActivity(e){
     let liOfTrash = e.currentTarget.offsetParent;
     let h3ValueOfLi = $(`#${liOfTrash.id} div h3`).text()
     activityValue
@@ -94,24 +111,14 @@ $(document).on('click', '#trash', (e) =>{
     activityValue = jQuery.grep(activityValue, function(n) {
         return n!= h3ValueOfLi;
     })
-})
+}
 
-
-$('button[type="submit"]').click((e) =>{
-    if ($('form input[type="text"]').val() == '') {
-    }else{
-        e.preventDefault();
-        checkerInputValue();
-    }
-})
-
-$('button[type="reset"]').click(() => {
-    $('form input[type="text"]').val('');
+function hideForm(){
+    $(inputValue).val('');
     $('#formContainer').slideUp();
-});
+}
 
-
-$(document).on('click', 'div h3', (e) => {
+function clickedOverH3 (e){
     let liOfH3 = e.target.offsetParent
     let liSelected = `#${$(liOfH3).attr('id')}`
     let checkboxClicked = $(`${liSelected} label input[type="checkbox"]`)
@@ -124,9 +131,9 @@ $(document).on('click', 'div h3', (e) => {
         $(checkboxClicked).prop('checked', false)
         $(`${liSelected} div h3`).css('text-decoration', 'none')
     }
-})
+}
 
-$(document).on('click', 'label input[type="checkbox"]', (e) => {
+function checkboxClicked(e){
     let liOfH3 = e.target.nextElementSibling.offsetParent.offsetParent
     let liSelected = `#${$(liOfH3).attr('id')}`
     let checkOrNot = $(`${liSelected} label input[type="checkbox"]`).prop('checked')
@@ -136,5 +143,19 @@ $(document).on('click', 'label input[type="checkbox"]', (e) => {
     }else{
         $(`${liSelected} div h3`).css('text-decoration', 'none')
     }
-})
+}
+
+$('main header button').click(toggleFormVisibility)
+
+$('header div').click(updateListName)
+
+$(document).on('click', '#trash', removeActivity)
+
+$(submitButton).click(addActivity)
+
+$(resetButton).click(hideForm);
+
+$(document).on('click', 'div h3', clickedOverH3)
+
+$(document).on('click', 'label input[type="checkbox"]', checkboxClicked)
 

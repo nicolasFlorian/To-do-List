@@ -241,15 +241,24 @@ button svg{
 
 #listContainer ul li #contentLiContainer{
     display: flex;
-    width: 350px;
 }
+
+#listContainer ul li div h3 {
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 250px;
+}
+
 
 #trashButtonContainer{
     width: 30px;
     height: 30px;
 }
 
-#listContainer ul li #contentLiContainer label{
+#contentLiContainer label{
     margin-right: 45px;
 }
 
